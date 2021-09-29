@@ -21,13 +21,19 @@ RUN mamba install --quiet --yes \
     'beautifulsoup4' \
     'bokeh' \
     'bottleneck' \
+    'category_encoders' \
     'cloudpickle' \
     'conda-forge::blas=*=openblas' \
     'cython' \
     'dill' \
+    'dask' \
+    'dask-gateway' \
+    'dask-ml' \
+    'fbprophet' \
     'h5py' \
     'ipympl'\
     'ipywidgets' \
+    'kmodes' \
     'matplotlib-base' \
     'numba' \
     'numexpr' \
