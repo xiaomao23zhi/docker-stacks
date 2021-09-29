@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-ARG OWNER=registry.cn-hangzhou.aliyuncs.com/gcrioo
-ARG BASE_CONTAINER=$OWNER/minimal-notebook:python3.7
+ARG OWNER=jupyter
+ARG BASE_CONTAINER=registry.cn-hangzhou.aliyuncs.com/gcrioo/minimal-notebook:python3.7
 FROM $BASE_CONTAINER
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
