@@ -15,6 +15,7 @@ RUN fix-permissions "${R_LIBS_USER}"
 # R pre-requisites
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
+    libgfortran4 \
     fonts-dejavu \
     gfortran \
     gcc && \
