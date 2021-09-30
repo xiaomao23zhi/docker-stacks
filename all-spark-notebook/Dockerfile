@@ -15,7 +15,6 @@ RUN fix-permissions "${R_LIBS_USER}"
 # R pre-requisites
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
-    binutils \
     fonts-dejavu \
     gfortran \
     gcc && \
@@ -25,6 +24,8 @@ USER ${NB_UID}
 
 # R packages including IRKernel which gets installed globally.
 RUN mamba install --quiet --yes \
+    'binutils_impl_linux-64=2.36.1' \
+    'binutils_linux-64=2.36' \
     'r-base=4.1.1' \
     'r-ggplot2' \
     'r-irkernel' \
