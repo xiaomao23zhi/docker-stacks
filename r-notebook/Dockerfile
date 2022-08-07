@@ -6,6 +6,10 @@ FROM $BASE_CONTAINER
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 USER root
 
 # R pre-requisites
@@ -37,22 +41,22 @@ RUN mamba install --quiet --yes \
     'r-nycflights13' \
     'r-randomforest' \
     'r-rcurl' \
+    'r-rmarkdown' \
     'r-rodbc' \
     'r-rsqlite' \
     'r-shiny' \
+    'r-tidyverse' \
     'unixodbc' && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# These packages are not easy to install under arm
+# `r-tidymodels` is not easy to install under arm
 RUN set -x && \
     arch=$(uname -m) && \
     if [ "${arch}" == "x86_64" ]; then \
         mamba install --quiet --yes \
-            'r-rmarkdown' \
-            'r-tidymodels' \
-            'r-tidyverse' && \
+            'r-tidymodels' && \
             mamba clean --all -f -y && \
             fix-permissions "${CONDA_DIR}" && \
             fix-permissions "/home/${NB_USER}"; \

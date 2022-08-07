@@ -4,7 +4,7 @@ The main purpose of the source code in this folder is to properly tag all the im
 These two processes are closely related, so the source code is widely reused.
 
 Basic example of a tag is a `python` version tag.
-For example, an image `jupyter/base-notebook` with `python 3.8.8` will have a tag `jupyter/base-notebook:python-3.8.8`.
+For example, an image `jupyter/base-notebook` with `python 3.10.5` will have a tag `jupyter/base-notebook:python-3.10.5`.
 This tag (and all the other tags) are pushed to Docker Hub.
 
 Manifest is a description of some important part of the image in a `markdown`.
@@ -27,9 +27,9 @@ In this section we will briefly describe source code in this folder and give exa
 `DockerRunner` is a helper class to easily run a docker container and execute commands inside this container:
 
 ```python
-from .docker_runner import DockerRunner
+from tagging.docker_runner import DockerRunner
 
-with DockerRunner("ubuntu:bionic") as container:
+with DockerRunner("ubuntu:22.04") as container:
     DockerRunner.run_simple_command(container, cmd="env", print_result=True)
 ```
 
@@ -38,7 +38,7 @@ with DockerRunner("ubuntu:bionic") as container:
 `GitHelper` methods are run in the current `git` repo and give the information about last commit hash and commit message:
 
 ```python
-from .git_helper import GitHelper
+from tagging.git_helper import GitHelper
 
 print("Git hash:", GitHelper.commit_hash())
 print("Git message:", GitHelper.commit_message())
@@ -55,6 +55,7 @@ All the taggers are inherited from `TaggerInterface`:
 ```python
 class TaggerInterface:
     """Common interface for all taggers"""
+
     @staticmethod
     def tag_value(container) -> str:
         raise NotImplementedError
@@ -65,6 +66,10 @@ So, `tag_value(container)` method gets a docker container as an input and return
 `SHATagger` example:
 
 ```python
+from tagging.git_helper import GitHelper
+from tagging.taggers import TaggerInterface
+
+
 class SHATagger(TaggerInterface):
     @staticmethod
     def tag_value(container):
@@ -84,6 +89,7 @@ All the other manifest classes are inherited from `ManifestInterface`:
 ```python
 class ManifestInterface:
     """Common interface for all manifests"""
+
     @staticmethod
     def markdown_piece(container) -> str:
         raise NotImplementedError
@@ -94,19 +100,20 @@ class ManifestInterface:
 `AptPackagesManifest` example:
 
 ```python
+from tagging.manifests import ManifestInterface, quoted_output
+
+
 class AptPackagesManifest(ManifestInterface):
     @staticmethod
     def markdown_piece(container) -> str:
-        return "\n".join([
-            "## Apt Packages",
-            "",
-            quoted_output(container, "apt list --installed")
-        ])
+        return "\n".join(
+            ["## Apt Packages", "", quoted_output(container, "apt list --installed")]
+        )
 ```
 
 - `quoted_output` simply runs the command inside container using `DockerRunner.run_simple_command` and wraps it to triple quotes to create a valid markdown piece of file.
 - `manifests.py` contains all the manifests.
-- `create_manifests.py` is a python executable which is used to create the build manifest for an image.
+- `write_manifest.py` is a python executable which is used to create the build manifest and history line for an image.
 
 ### Images Hierarchy
 
