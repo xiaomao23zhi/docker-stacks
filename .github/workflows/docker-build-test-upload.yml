@@ -1,4 +1,7 @@
-name: Download parent image, build new one, test it and upload to GitHub artifacts
+name: Download parent image, build a new one and test it; then upload the image, tags and manifests to GitHub artifacts
+
+env:
+  OWNER: ${{ github.repository_owner }}
 
 on:
   workflow_call:
@@ -23,6 +26,7 @@ on:
 jobs:
   build-test-upload:
     runs-on: ${{ inputs.runsOn }}
+
     steps:
       - name: Checkout Repo ⚡️
         uses: actions/checkout@v3
@@ -32,9 +36,15 @@ jobs:
           platform: ${{ inputs.platform }}
 
       # Self-hosted runners share a state (whole VM) between runs
-      - name: Reset docker state 🗑️
-        if: ${{ inputs.platform != 'amd64' }}
-        run: docker system prune --all --force
+      # Also, they might have running or stopped containers,
+      # which are not cleaned up by `docker system prun`
+      - name: Reset docker state and cleanup artifacts 🗑️
+        if: ${{ inputs.platform != 'x86_64' }}
+        run: |
+          docker kill $(docker ps --quiet) || true
+          docker rm $(docker ps --all --quiet) || true
+          docker system prune --all --force
+          rm -rf /tmp/jupyter/
         shell: bash
 
       - name: Load parent built image to Docker 📥
@@ -44,8 +54,13 @@ jobs:
           image: ${{ inputs.parentImage }}
           platform: ${{ inputs.platform }}
 
+      - name: Pull ubuntu:22.04 image 📥
+        if: ${{ inputs.parentImage == '' }}
+        run: docker pull ubuntu:22.04
+        shell: bash
+
       - name: Build image 🛠
-        run: docker build --rm --force-rm --tag jupyter/${{ inputs.image }} ${{ inputs.image }}/
+        run: docker build --rm --force-rm --tag ${{ env.OWNER }}/${{ inputs.image }} ${{ inputs.image }}/
         env:
           DOCKER_BUILDKIT: 1
           # Full logs for CI build
@@ -53,22 +68,44 @@ jobs:
         shell: bash
 
       - name: Run tests ✅
-        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }}
+        run: python3 -m tests.run_tests --short-image-name ${{ inputs.image }} --owner ${{ env.OWNER }}
         shell: bash
 
+      - name: Write tags file 🏷
+        run: |
+          python3 -m tagging.write_tags_file --short-image-name ${{ inputs.image }} --tags-dir /tmp/jupyter/tags/ --owner ${{ env.OWNER }}
+        shell: bash
+      - name: Upload tags file 💾
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.image }}-${{ inputs.platform }}-tags
+          path: /tmp/jupyter/tags/${{ inputs.platform }}-${{ inputs.image }}.txt
+          retention-days: 3
+
+      - name: Write manifest and build history file 🏷
+        run: python3 -m tagging.write_manifest --short-image-name ${{ inputs.image }} --hist-line-dir /tmp/jupyter/hist_lines/ --manifest-dir /tmp/jupyter/manifests/ --owner ${{ env.OWNER }}
+        shell: bash
+      - name: Upload manifest file 💾
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.image }}-${{ inputs.platform }}-manifest
+          path: /tmp/jupyter/manifests/${{ inputs.platform }}-${{ inputs.image }}-*.md
+          retention-days: 3
+      - name: Upload build history line 💾
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ inputs.image }}-${{ inputs.platform }}-history_line
+          path: /tmp/jupyter/hist_lines/${{ inputs.platform }}-${{ inputs.image }}-*.txt
+          retention-days: 3
+
       - name: Save image as a tar for later use 💾
-        run: docker save jupyter/${{ inputs.image }} -o /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+        run: |
+          mkdir -p /tmp/jupyter/images/
+          docker save ${{ env.OWNER }}/${{ inputs.image }} | zstd > /tmp/jupyter/images/${{ inputs.image }}-${{ inputs.platform }}.tar.zst
         shell: bash
       - name: Upload image as artifact 💾
         uses: actions/upload-artifact@v3
         with:
           name: ${{ inputs.image }}-${{ inputs.platform }}
-          path: /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
+          path: /tmp/jupyter/images/${{ inputs.image }}-${{ inputs.platform }}.tar.zst
           retention-days: 3
-
-      # Self-hosted runners share a state (whole VM) between runs
-      - name: Cleanup artifacts 🗑️
-        run: |
-          rm -f /tmp/${{ inputs.image }}-${{ inputs.platform }}.tar
-        shell: bash
-        if: always()

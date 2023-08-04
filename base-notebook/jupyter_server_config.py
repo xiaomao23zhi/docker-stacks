@@ -9,8 +9,10 @@ from jupyter_core.paths import jupyter_data_dir
 
 c = get_config()  # noqa: F821
 c.ServerApp.ip = "0.0.0.0"
-c.ServerApp.port = 8888
 c.ServerApp.open_browser = False
+
+# to output both image/svg+xml and application/pdf plot formats in the notebook file
+c.InlineBackend.figure_formats = {"png", "jpeg", "svg", "pdf"}
 
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
@@ -51,7 +53,6 @@ if "GEN_CERT" in os.environ:
     os.chmod(pem_file, stat.S_IRUSR | stat.S_IWUSR)
     c.ServerApp.certfile = pem_file
 
-# Change default umask for all subprocesses of the notebook server if set in
-# the environment
+# Change default umask for all subprocesses of the Server if set in the environment
 if "NB_UMASK" in os.environ:
     os.umask(int(os.environ["NB_UMASK"], 8))

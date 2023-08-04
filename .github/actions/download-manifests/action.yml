@@ -21,12 +21,22 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
+        name: docker-stacks-foundation-aarch64-history_line
+        path: ${{ inputs.histLineDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: docker-stacks-foundation-x86_64-history_line
+        path: ${{ inputs.histLineDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
         name: base-notebook-aarch64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: base-notebook-amd64-history_line
+        name: base-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -36,7 +46,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: minimal-notebook-amd64-history_line
+        name: minimal-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -46,7 +56,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: scipy-notebook-amd64-history_line
+        name: scipy-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -56,12 +66,27 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: r-notebook-amd64-history_line
+        name: r-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: tensorflow-notebook-amd64-history_line
+        name: julia-notebook-aarch64-history_line
+        path: ${{ inputs.histLineDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: julia-notebook-x86_64-history_line
+        path: ${{ inputs.histLineDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: tensorflow-notebook-aarch64-history_line
+        path: ${{ inputs.histLineDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: tensorflow-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -71,7 +96,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: datascience-notebook-amd64-history_line
+        name: datascience-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -81,7 +106,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: pyspark-notebook-amd64-history_line
+        name: pyspark-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -91,9 +116,19 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: all-spark-notebook-amd64-history_line
+        name: all-spark-notebook-x86_64-history_line
         path: ${{ inputs.histLineDir }}
 
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: docker-stacks-foundation-aarch64-manifest
+        path: ${{ inputs.manifestDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: docker-stacks-foundation-x86_64-manifest
+        path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
@@ -102,7 +137,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: base-notebook-amd64-manifest
+        name: base-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -112,7 +147,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: minimal-notebook-amd64-manifest
+        name: minimal-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -122,7 +157,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: scipy-notebook-amd64-manifest
+        name: scipy-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -132,12 +167,17 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: r-notebook-amd64-manifest
+        name: r-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: tensorflow-notebook-amd64-manifest
+        name: tensorflow-notebook-aarch64-manifest
+        path: ${{ inputs.manifestDir }}
+    - name: Download artifact 📥
+      uses: actions/download-artifact@v3
+      with:
+        name: tensorflow-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -147,7 +187,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: datascience-notebook-amd64-manifest
+        name: datascience-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -157,7 +197,7 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: pyspark-notebook-amd64-manifest
+        name: pyspark-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
@@ -167,5 +207,5 @@ runs:
     - name: Download artifact 📥
       uses: actions/download-artifact@v3
       with:
-        name: all-spark-notebook-amd64-manifest
+        name: all-spark-notebook-x86_64-manifest
         path: ${{ inputs.manifestDir }}
